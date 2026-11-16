@@ -226,7 +226,8 @@
       } else {
         right = '<dl class="nums"><div><dt>有形文資</dt><dd><b>0</b>處</dd></div><div><dt>無形文資</dt><dd><b>' + d.ichN + "</b>項</dd></div><div><dt>最近的文資</dt><dd><b>" + d.near[0].km.toFixed(1) + "</b>公里</dd></div></dl>" +
           '<p class="pc-empty">' + (d.ichN ? "這裡的文資不是房子，是人：祭典、手藝與表演，要在對的時間、跟著對的人才看得到。" : "卡片上沒有圖表，因為真的沒有資料可以畫。最近的文資在隔壁：") + "</p>" +
-          '<ul class="nearl">' + d.near.map(function (o) { return '<li><a href="' + esc(o.u) + '" target="_blank" rel="noopener">' + esc(o.n) + "</a><span>" + esc(o.tn) + "・" + o.km.toFixed(1) + " 公里</span></li>"; }).join("") + "</ul>";
+          '<ul class="nearl">' + (d.ichN ? d.ich.slice(0, 4).map(function (i) { return '<li><a href="' + esc(i.u || i.b) + '" target="_blank" rel="noopener">' + esc(i.n) + "</a><span>" + esc(i.t) + "</span></li>"; }) :
+            d.near.map(function (o) { return '<li><a href="' + esc(o.u) + '" target="_blank" rel="noopener">' + esc(o.n) + "</a><span>" + esc(o.tn) + "・" + o.km.toFixed(1) + " 公里</span></li>"; })).join("") + "</ul>";
       }
       var html = '<div class="town"' + lcStyle(d.type) + '><div class="wrap"><a class="back" href="/">‹ 換一個鄉鎮</a>' +
         '<section class="pc" id="card"><div class="pc-a"><p class="pc-where"><span class="plate">' + esc(d.county) + '</span><span class="pc-series">' + esc(IDX.series[t.series]) + "</span></p>" +
@@ -267,17 +268,20 @@
       if (facts.length) html += '<section class="sec"><div class="sec-h"><h2>' + (oldest && d.n > 1 ? "最老的一處，和你可能沒想到的事" : "你可能沒想到的事") + '</h2></div><ul class="facts">' + facts.join("") + "</ul></section>";
 
       /* 最近的文資（獨苗、留白） */
+      var nearHtml = "";
       if (d.near.length) {
-        html += '<section class="sec"><div class="sec-h"><h2>' + (d.n ? "想多看幾處？最近的在這裡" : "最近的文資在隔壁") + "</h2><p>直線距離，從" + (d.n ? "主角那一處" : "行政區的幾何中心") + '起算；每個鄉鎮只列最近的一處</p></div><ul class="cards">' +
+        nearHtml = '<section class="sec"><div class="sec-h"><h2>' + (d.n ? "想多看幾處？最近的在這裡" : "最近的文資在隔壁") + "</h2><p>直線距離，從" + (d.n ? "主角那一處" : "行政區的幾何中心") + '起算；每個鄉鎮只列最近的一處</p></div><ul class="cards">' +
           d.near.map(function (o, i) {
             return siteCard(o, i, o.tn, '<p class="card-km"><b>' + o.km.toFixed(1) + '</b>公里外・<a href="' + turl(o.ts) + '">看' + esc(o.tn) + "的性格卡</a></p>");
           }).join("") + "</ul></section>";
       }
       /* 無形文資 */
+      var ichHtml = "";
       if (d.ich.length) {
-        html += '<section class="sec"><div class="sec-h"><h2>在這裡傳承的無形文資</h2><p>共 ' + d.ichN + " 項" + (d.ichN > d.ich.length ? "，列出 " + d.ich.length + " 項" : "") + '；依場館地址與展演地點比對</p></div><ul class="ich">' +
+        ichHtml = '<section class="sec"><div class="sec-h"><h2>在這裡傳承的無形文資</h2><p>共 ' + d.ichN + " 項" + (d.ichN > d.ich.length ? "，列出 " + d.ich.length + " 項" : "") + '；依場館地址與展演地點比對</p></div><ul class="ich">' +
           d.ich.map(function (i) { return '<li><a href="' + esc(i.u || i.b) + '" target="_blank" rel="noopener"><small>' + esc(i.t) + "</small><b>" + esc(i.n) + "</b><span>" + esc(i.s) + "</span></a></li>"; }).join("") + "</ul></section>";
       }
+      html += d.n ? nearHtml + ichHtml : ichHtml + nearHtml; /* 沒有有形文資時，無形文資排前面 */
       /* 最像的鄉鎮＋鄰居 */
       if (d.similar) {
         var s = d.similar;
