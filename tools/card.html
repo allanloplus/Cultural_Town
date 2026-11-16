@@ -1,0 +1,170 @@
+<!doctype html><html lang="zh-Hant-TW"><head><meta charset="utf-8">
+<!-- 社群預覽圖與下載用卡片的原稿。tools/render.js 會用瀏覽器開這一頁截圖：
+     ?slug=<縣市/鄉鎮>&mode=og   → 1200×630（og/<縣市>/<鄉鎮>.jpg）
+     ?slug=<縣市/鄉鎮>&mode=card → 1080×1350（card/<縣市>/<鄉鎮>.jpg）
+     ?mode=site                  → 首頁用的 assets/og.jpg
+     內容全部讀 data/，這裡不做計算。只有淺色版。 -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--paper:#f6f1e7;--card:#fffdf8;--ink:#2b2521;--muted:#6c6058;--line:#e0d5c3;--lc:#1d6f73;
+--e0:#8a6a4a;--e1:#b8860b;--e2:#d9692b;--e3:#b23a3a;--e4:#1d6f73;--e5:#3b6ea8;--d-F:#b23a3a;--d-L:#a8714a;--d-I:#1d6f73;--d-G:#3b6ea8;--d-A:#8a6a4a;--d-X:#6c6058;
+--fd:"LXGW WenKai TC",serif;--fb:"Noto Sans TC",sans-serif}
+body{font-family:var(--fb);color:var(--ink);background:var(--paper);overflow:hidden;position:relative}
+body.og{width:1200px;height:630px} body.card{width:1080px;height:1350px}
+.bg{position:absolute;inset:0;background:radial-gradient(760px 460px at 92% 0,color-mix(in srgb,var(--lc) 20%,transparent),transparent 70%),radial-gradient(520px 320px at 0 100%,#f3dfc0,transparent 70%)}
+.edge{position:absolute;inset:0 auto 0 0;width:18px;background:var(--lc)}
+.plate{display:inline-block;font-weight:700;letter-spacing:.1em;padding:4px 18px;border-radius:10px;background:var(--lc);color:#fff}
+.series{color:var(--muted);letter-spacing:.16em;margin-left:14px}
+h1{font-family:var(--fd);font-weight:700;letter-spacing:.06em;line-height:1.1;white-space:nowrap}
+.is{color:var(--muted);letter-spacing:.12em}
+.type{font-family:var(--fd);font-weight:700;color:var(--lc);line-height:1.15;white-space:nowrap}
+.tag{font-family:var(--fd);line-height:1.45}
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chips span{padding:2px 16px;border-radius:999px;border:2px solid var(--lc);color:color-mix(in srgb,var(--lc) 78%,var(--ink));font-weight:700;background:var(--card)}
+.chips span.b2{border-color:var(--line);color:var(--muted);font-weight:500}
+.ph{position:absolute;overflow:hidden;border-radius:26px;border:6px solid var(--card);box-shadow:0 14px 36px rgba(60,40,20,.24);background:#efe7d8}
+.ph img{width:100%;height:100%;object-fit:cover;display:block}
+.ph .cap{position:absolute;left:0;right:0;bottom:0;padding:30px 16px 10px;color:#fff;background:linear-gradient(transparent,rgba(0,0,0,.7));line-height:1.35}
+.ph .cap b{display:block;font-family:var(--fd)}
+.chars{position:absolute;display:flex;align-items:flex-end;gap:14px;z-index:2}
+.chars img{width:var(--cs);height:var(--cs);border-radius:50%;object-fit:cover;object-position:50% 12%;background:#cfe8dd;border:6px solid var(--card);box-shadow:0 8px 20px rgba(40,25,10,.22)}
+.chars img+img{background:#f7e2a6}
+.url{position:absolute;color:var(--muted);letter-spacing:.04em}
+.brand{position:absolute;font-family:var(--fd);font-weight:700;display:flex;align-items:center;gap:12px}
+.brand img{border-radius:10px}
+.stack{display:flex;border-radius:10px;overflow:hidden;gap:3px}
+.stack i{display:block;min-width:6px;background:var(--c)}
+.lg{display:flex;flex-wrap:wrap;gap:4px 20px;list-style:none}
+.lg li{display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+.lg i{width:14px;height:14px;border-radius:4px;background:var(--c)}
+.num b{font-family:var(--fd);color:var(--lc);line-height:1}
+.zero{font-family:var(--fd);font-weight:700;color:var(--card);-webkit-text-stroke:5px var(--line);line-height:1}
+.box{background:var(--card);border:1.5px solid var(--line);border-radius:22px;box-shadow:0 8px 24px rgba(60,40,20,.10)}
+.k{font-size:20px;letter-spacing:.14em;font-weight:700;color:color-mix(in srgb,var(--lc) 78%,var(--ink))}
+.bars{list-style:none;display:grid;gap:10px}
+.bars li{display:grid;grid-template-columns:3em 1fr 7.6em;gap:14px;align-items:center;font-size:24px}
+.bars .bar{height:22px;border-radius:999px;background:#efe7d8;overflow:hidden}.bars .bar i{display:block;height:100%;border-radius:999px;background:var(--c)}
+.bars .v{color:var(--muted);font-size:21px;white-space:nowrap}.bars .v b{color:var(--ink)}
+
+/* 1200×630 */
+.og .l{position:absolute;left:66px;top:46px;width:640px}
+.og .plate{font-size:24px}.og .series{font-size:21px}
+.og h1{font-size:112px;margin-top:10px}.og h1.long{font-size:88px}
+.og .is{font-size:23px;margin-top:6px}
+.og .type{font-size:76px}.og .type.long{font-size:62px}
+.og .tag{font-size:29px;margin-top:8px;max-width:600px}
+.og .chips{margin-top:16px;font-size:21px}
+.og .ph{right:52px;top:70px;width:430px;height:380px;transform:rotate(2deg)}
+.og .ph .cap{font-size:15px}.og .ph .cap b{font-size:25px}
+.og .bot{position:absolute;left:66px;right:52px;bottom:34px;display:flex;align-items:flex-end;gap:26px}
+.og .num{font-size:22px;color:var(--muted);white-space:nowrap}.og .num b{font-size:66px;margin-right:6px}
+.og .eras{flex:1;min-width:0;padding-bottom:6px}.og .stack{height:26px}.og .lg{font-size:19px;margin-top:8px}
+.og .chars{right:52px;bottom:26px;--cs:138px}
+.og.nophoto .chars{right:110px;bottom:150px;--cs:200px}
+.og .url{right:56px;top:24px;font-size:19px}
+.og .pad{width:310px;flex:none}.og.nophoto .pad{width:0}
+.og .zero{position:absolute;right:210px;top:30px;font-size:260px;opacity:.9}
+
+/* 1080×1350 */
+.card .l{position:absolute;left:74px;top:56px;width:640px}
+.card .plate{font-size:28px}.card .series{font-size:24px}
+.card h1{font-size:136px;margin-top:14px}.card h1.long{font-size:104px}
+.card .is{font-size:26px;margin-top:8px}
+.card .type{font-size:92px}.card .type.long{font-size:74px}
+.card .tag{font-size:32px;margin-top:10px;width:900px}
+.card .chips{margin-top:16px;font-size:24px;width:930px}
+.card .ph{left:74px;right:60px;top:572px;height:250px}
+.card .ph .cap{font-size:17px;padding:44px 22px 12px}.card .ph .cap b{font-size:32px}
+.card .mid{position:absolute;left:74px;right:60px;top:844px;display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:stretch}
+.card.nophoto .mid{top:590px}.card .wide{grid-column:1/-1}.card .list{list-style:none;margin-top:8px}.card .list li{display:flex;justify-content:space-between;gap:16px;align-items:baseline;padding:7px 0;border-top:1.5px dashed var(--line);font-size:22px;color:var(--muted)}.card .list b{font-family:var(--fd);font-size:30px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.card .list span{white-space:nowrap}
+.card .box{padding:18px 24px}
+.card .stack{height:26px;margin-top:8px}.card .lg{font-size:19px;margin-top:8px;gap:2px 14px}
+.card .bars{margin-top:8px;gap:7px}.card .bars li{font-size:21px;grid-template-columns:2.4em 1fr 6.6em;gap:10px}.card .bars .v{font-size:18px}.card .bars .bar{height:18px}
+.card .fact b{font-family:var(--fd);font-size:60px;color:var(--lc);line-height:1.1;margin-right:8px}
+.card .fact i{font-style:normal;color:var(--muted);font-size:22px}
+.card .fact p{font-size:23px;line-height:1.55;margin-top:4px}
+.card .foot{position:absolute;left:74px;right:60px;bottom:34px;display:flex;justify-content:space-between;align-items:flex-end}
+.card .twin{font-size:24px;line-height:1.4}.card .twin b{font-family:var(--fd);font-size:32px}
+.card .brand{position:static;font-size:28px;margin-top:6px}.card .url{position:static;font-size:22px}
+.card .chars{right:60px;top:150px;--cs:170px}
+
+.card .zero{position:absolute;right:130px;top:330px;font-size:230px}
+
+/* 首頁預覽圖 */
+.site h1{position:absolute;left:66px;top:128px;font-size:78px;white-space:normal;line-height:1.25}
+.site .k0{position:absolute;left:68px;top:56px;font-size:24px;font-weight:700;letter-spacing:.16em;color:#1d6f73;display:flex;align-items:center;gap:14px}
+.site .sub{position:absolute;left:70px;top:346px;font-family:var(--fd);font-size:34px;color:#1d6f73}
+.site .chars{right:36px;top:70px;bottom:auto;gap:6px}.site .chars img{width:auto;height:372px;border-radius:0;border:0;background:none;box-shadow:none;filter:drop-shadow(0 10px 14px rgba(40,25,10,.2))}.site .chars img+img{height:330px;background:none}
+.site .tiles{position:absolute;left:66px;right:52px;bottom:40px;display:flex;gap:12px}
+.site .tiles span{flex:1;background:var(--card);border:1.5px solid var(--line);border-top:8px solid var(--c);border-radius:14px;padding:10px 6px;font-family:var(--fd);font-weight:700;font-size:24px;text-align:center;white-space:nowrap;box-shadow:0 6px 16px rgba(60,40,20,.1)}
+</style></head><body>
+<script>
+(function () {
+  var q = new URLSearchParams(location.search), mode = q.get("mode") || "og", slug = q.get("slug");
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  function j(u) { return fetch(u).then(function (r) { return r.json(); }); }
+  function done() { (document.fonts ? document.fonts.ready : Promise.resolve()).then(function () {
+    return Promise.all([].map.call(document.images, function (im) { return im.complete ? 0 : new Promise(function (ok) { im.onload = im.onerror = ok; }); }));
+  }).then(function () { document.body.dataset.ready = "1"; }); }
+  var ES = ["史前", "荷西", "明鄭", "清領", "日治", "戰後"];
+  j("/data/index.json").then(function (IDX) {
+    var TY = {}, DOM = {}; IDX.types.forEach(function (t) { TY[t.id] = t; }); IDX.doms.forEach(function (d) { DOM[d.id] = d; });
+    if (mode === "site") {
+      document.body.className = "og site";
+      var pick = ["OF", "JL", "JI", "JG", "SF", "BI"];
+      document.body.innerHTML = '<div class="bg"></div><div class="k0"><img src="/assets/icon.svg" width="46" height="46" style="border-radius:12px">全臺 ' + IDX.meta.towns + " 個鄉鎮市區・" + IDX.types.length + " 種性格</div>" +
+        "<h1>你的家鄉，<br>是哪一種文資性格？</h1><p class=\"sub\">選一個鄉鎮，領一張算出來的性格卡。</p>" +
+        '<div class="chars"><img src="/assets/characters/allan-wave.webp"><img src="/assets/characters/arale-wave.webp"></div>' +
+        '<div class="tiles">' + pick.map(function (id) { return '<span style="--c:' + TY[id].color + '">' + esc(TY[id].name) + "</span>"; }).join("") + "</div>";
+      return done();
+    }
+    return j("/data/town/" + slug + ".json").then(function (d) {
+      var t = TY[d.type], S = {}; d.sites.forEach(function (o) { S[o.i] = o; });
+      var rep = d.reps.map(function (i) { return S[i]; }).filter(function (o) { return o.p; })[0];
+      var near = !d.n && d.near.filter(function (o) { return o.p; })[0];
+      var ph = rep || null;
+      document.documentElement.style.setProperty("--lc", t.color);
+      document.body.className = mode + (ph ? "" : " nophoto");
+      var chips = (t.series === "full" ? ["時代重心：" + t.era, "主調：" + DOM[t.dom].name] : []).map(function (c) { return "<span>" + esc(c) + "</span>"; }).join("") +
+        d.badges.map(function (b) { return '<span class="b2">' + esc(b) + "</span>"; }).join("");
+      var head = '<div class="l"><p><span class="plate">' + esc(d.county) + '</span><span class="series">' + esc(IDX.series[t.series]) + "</span></p>" +
+        '<h1 class="' + (d.name.length > 3 ? "long" : "") + '">' + esc(d.name) + '</h1><p class="is">的文資性格是</p><p class="type ' + (t.name.length > 5 ? "long" : "") + '">' + esc(t.name) + "</p>" +
+        '<p class="tag">' + esc(t.tag) + "</p>" + (chips ? '<p class="chips">' + chips + "</p>" : "") + "</div>";
+      var photo = ph ? '<div class="ph"><img src="' + esc(ph.p.l) + '"><p class="cap"><b>' + esc(ph.n) + "</b>攝影：" + esc(ph.p.a || "Wikimedia Commons") + "｜" + esc(ph.p.lic) + "</p></div>" : "";
+      var stack = d.n ? '<div class="stack">' + d.eras.map(function (e) { return '<i style="flex:' + e[1] + ";--c:var(--e" + e[0] + ')"></i>'; }).join("") + '</div><ul class="lg">' +
+        d.eras.map(function (e) { return '<li><i style="--c:var(--e' + e[0] + ')"></i>' + ES[e[0]] + " " + e[1] + "</li>"; }).join("") + "</ul>" : "";
+      var chars = '<div class="chars"><img src="/assets/characters/allan-' + (d.n ? "point" : "scratch") + '.webp"><img src="/assets/characters/arale-' + (d.n ? "thumb" : "think") + '.webp"></div>';
+      var zero = d.n ? "" : '<div class="zero">0</div>';
+      if (mode === "og") {
+        var numtxt = d.n ? "<b>" + d.n + "</b>處文資" : (d.ichN ? "<b>" + d.ichN + "</b>項無形文資" : "<b>" + d.near[0].km.toFixed(1) + "</b>公里外有最近的文資");
+        document.body.innerHTML = '<div class="bg"></div><div class="edge"></div>' + zero + head + photo +
+          '<div class="bot"><p class="num">' + numtxt + '</p><div class="eras">' + stack + '</div><div class="pad"></div></div>' + chars + '<p class="url">cultural-town.123hi.org</p>';
+      } else {
+        var max = Math.max.apply(null, d.doms.map(function (x) { return x[1]; }).concat([1]));
+        var bars = d.n ? '<div class="box"><p class="k">時代組成</p>' + stack + '<p class="k" style="margin-top:18px">類型組成</p><ul class="bars">' + d.doms.slice(0, 4).map(function (x) {
+          return "<li><span>" + esc(DOM[x[0]].name) + '</span><span class="bar"><i style="width:' + (100 * x[1] / max) + "%;--c:var(--d-" + x[0] + ')"></i></span><span class="v"><b>' + x[1] + "</b> 處・" + Math.round(100 * x[1] / d.n) + "%</span></li>";
+        }).join("") + "</ul></div>" : "";
+        var f = d.facts[0];
+        var fact = f ? '<div class="box fact"><p class="k">沒想到吧・' + esc(f.k) + "</p><p><b>" + esc(f.big) + "</b><i>" + esc(f.unit) + "</i></p><p>" + esc(f.t) + "</p>" +
+          (d.n > 1 && S[d.oldest] ? '<p style="margin-top:14px;padding-top:12px;border-top:1.5px dashed var(--line)"><span class="k">最老的一處</span><br>' + esc(S[d.oldest].n) + "，" + (S[d.oldest].y < 0 ? "西元前 " + (-S[d.oldest].y) : S[d.oldest].y) + " 年</p>" : "") +
+          "</div>" : "";
+        var list = "";
+        if (!ph) {
+          var CAT = IDX.cats, rows, ttl;
+          if (d.n) { ttl = "這裡的文資"; rows = d.sites.slice(0, 4).map(function (o) { return [o.n, CAT[o.k] + "・" + (o.y < 0 ? "西元前 " + (-o.y) : o.y) + " 年"]; }); }
+          else if (d.ichN) { ttl = "在這裡傳承的無形文資"; rows = d.ich.slice(0, 4).map(function (i) { return [i.n, i.t]; }); }
+          else { ttl = "最近的文資在隔壁"; rows = d.near.map(function (o) { return [o.n, o.tn + "・" + o.km.toFixed(1) + " 公里"]; }); }
+          list = '<div class="box wide"><p class="k">' + ttl + '</p><ul class="list">' + rows.map(function (r) { return "<li><b>" + esc(r[0]) + "</b><span>" + esc(r[1]) + "</span></li>"; }).join("") + "</ul></div>";
+        }
+        var s = d.similar;
+        document.body.innerHTML = '<div class="bg"></div><div class="edge"></div>' + zero + head + photo + '<div class="mid">' + (d.n ? bars + fact : '<div class="box fact wide">' + fact.replace(/^<div class="box fact">/, "")) + list + "</div>" + chars +
+          '<div class="foot"><div>' + (s ? '<p class="twin">跟我最像的鄉鎮：<b>' + esc(s.c + s.n) + "</b></p>" : "") +
+          '<p class="brand"><img src="/assets/icon.svg" width="44" height="44">鄉鎮文資性格卡</p></div><p class="url">cultural-town.123hi.org</p></div>';
+      }
+      done();
+    });
+  });
+})();
+</script>
+</body></html>
