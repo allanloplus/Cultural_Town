@@ -311,7 +311,7 @@ button { cursor: pointer; background: none; border: 0; padding: 0; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
 @media print { .top, .foot, .share, .back { display: none !important; } body { background: #fff; } }
 
-/* 回主網站（文資知識網站）的按鈕 */
+/* 回文資知識網站的按鈕 */
 .top-nav a.home-link { color: var(--teal); border: 1.5px solid var(--teal); font-weight: 700; padding: 4px 12px; margin-right: 4px; }
 .top-nav a.home-link:hover, .top-nav a.home-link:focus-visible { background: var(--teal); color: var(--paper); }
 @media (max-width: 640px) { .top-nav a.home-link { padding: 3px 8px; margin-right: 2px; } }
