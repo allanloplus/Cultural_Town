@@ -413,7 +413,7 @@ def neighbors(t):
     nb = [TOWNS[c] for c in ADJ.get(t["code"], []) if c in TOWNS]
     if not nb:
         nb = sorted((x for x in ALL if x is not t), key=lambda x: km(t["center"], x["center"]))[:3]
-    return sorted(nb, key=lambda x: -x["n"])
+    return sorted(nb, key=lambda x: (-x["n"], x["code"]))  # 同數時依代碼排，重跑結果才會一樣
 
 
 def nearest_sites(t, origin, k=3):
